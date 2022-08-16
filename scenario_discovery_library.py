@@ -11,16 +11,140 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+import statsmodels.api as sm
+from scipy import stats
 
 # External functions
-from logistic_regression_functions import fit_logistic, rank_significance
+from logistic_regression_functions import rank_significance
 from logistic_regression_plots import plot_many_contours, plot_single_contour
 
-from utils import binary_performance_mask
+from utils import binary_performance_mask, normalize_columns
+
+################################################################################
+
+
+
+class LinearRegression:
+
+    def __init__(self,
+                inputs, performance, param_names,
+                threshold = None, threshold_type = '>'):
+
+        # Store values
+        self.inputs = inputs
+        self.performance = performance
+        self.threshold = threshold
+        self.threshold_type = threshold_type
+        self.param_names = param_names
+
+
+        # Envoke the parent class (if expanding)
+    def fit_logistic(self, subset_predictors = False, subset = None, normalize = True):
+        """
+        Parameters:
+        ----------
+        df : DataFrame
+            Containing n columns of covariates, and a final column of binary
+            performance with failure = 0 and sucess = 1.
+        select_predictors : list of strings
+            A list of the predictor column names to be used in the regression.
+
+        Returns:
+        -------
+        fit_model
+        """
+
+        df = normalize_columns(self.data)
+
+        # Add a column of intercepts
+        df['Intercept'] = np.ones(np.shape(self.data)[0])
+
+        # Apply mask to performance
+        df['Success'] = binary_performance_mask(self)
+
+        if subset_predictors:
+            # Get a list of columns to use as predictors (and success col)
+            cols = subset
+            print(f'Using cols: {cols}')
+
+        else:
+            cols = df.drop('Success', axis = 1).columns.tolist()
+            print(f'Using all cols: {cols}')
+
+
+        # Fit regression
+        logit = sm.Logit(df['Success'], df[cols])
+        result = logit.fit()
+
+        return result
+
+    def run(self):
+
+        # Make a dataframe combing inputs and performance
+        self.data = pd.DataFrame(self.inputs)
+
+        # Fit the model
+        self.linear_model = self.fit_logistic()
+
+        return self.linear_model
+
+
+    def rank_inputs(self):
+        self.ranks = rank_significance(self.data)
+        return self.ranks
+
+
+    def plot_all_contours(self):
+        plot_many_contours(self)
+        return
+
+    def plot_parameter_contour_map(self, x, y):
+        plot_single_contour(self, x, y)
+        return
+
 
 
 
 ################################################################################
+
+class PRIM:
+
+    def algorithm_run(self):
+
+        self.results = 0
+
+        # Store a bool indicating successful execution
+        self.complete = True
+        return self.results
+
+
+    def count_coi(self, indices):
+        """
+        Given a set of indices on y, count the number of cases of interest in the set.
+        """
+
+        y_subset = self.y[indices]
+        coi = y_subset[y_subset == True].shape[0]
+        return coi
+
+
+################################################################################
+
+
+class CART:
+    def __init__(self):
+        pass
+
+
+################################################################################
+
+class BoostedTrees:
+    def __init__(self):
+        pass
+
+
+################################################################################
+
 
 class ScenarioExplorer:
 
@@ -88,90 +212,3 @@ class ScenarioExplorer:
 
 
 ################################################################################
-
-
-class LinearRegression:
-
-    def __init__(self,
-                inputs, performance, param_names,
-                threshold = None, threshold_type = '>'):
-
-        # Store values
-        self.inputs = inputs
-        self.performance = performance
-        self.threshold = threshold
-        self.threshold_type = threshold_type
-        self.param_names = param_names
-
-
-        # Envoke the parent class (if expanding)
-
-    def run(self):
-
-        # Make a dataframe combing inputs and performance
-        self.data = pd.DataFrame(self.inputs)
-
-        # Add a column of intercepts
-        self.data['Intercept'] = np.ones(np.shape(self.data)[0])
-
-        # Apply mask to performance
-        self.data['Success'] = binary_performance_mask(self)
-
-        # Fit the model
-        self.linear_model = fit_logistic(self.data)
-
-        return self.linear_model
-
-
-    def rank_inputs(self):
-        self.ranks = rank_significance(self.data)
-        return self.ranks
-
-
-    def plot_all_contours(self):
-        plot_many_contours(self)
-        return
-
-    def plot_parameter_contour_map(self, x, y):
-        plot_single_contour(self, x, y)
-        return
-
-
-
-
-################################################################################
-
-class PRIM(ScenarioExplorer):
-
-    def algorithm_run(self):
-
-        self.results = 0
-
-        # Store a bool indicating successful execution
-        self.complete = True
-        return self.results
-
-
-    def count_coi(self, indices):
-        """
-        Given a set of indices on y, count the number of cases of interest in the set.
-        """
-
-        y_subset = self.y[indices]
-        coi = y_subset[y_subset == True].shape[0]
-        return coi
-
-
-################################################################################
-
-
-class CART:
-    def __init__(self):
-        pass
-
-
-################################################################################
-
-class BoostedTrees:
-    def __init__(self):
-        pass

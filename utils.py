@@ -7,7 +7,11 @@ Contains basic utility functions used in scneario discovery.
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-
+import matplotlib as mpl
+import seaborn as sns
+import pandas as pd
+import statsmodels.api as sm
+from scipy import stats
 
 ################################################################################
 
@@ -27,7 +31,11 @@ def binary_performance_mask(model):
 
     return 1 * (mask == False)
 
+
 ################################################################################
+
+def normalize_columns(df):
+    return (df-df.min())/(df.max()-df.min())
 
 
 

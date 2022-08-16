@@ -14,10 +14,7 @@ import pandas as pd
 import statsmodels.api as sm
 from scipy import stats
 
-################################################################################
-
-def normalize_columns(df):
-    return (df-df.min())/(df.max()-df.min())
+from utils import normalize_columns, binary_performance_mask
 
 
 ################################################################################
@@ -48,7 +45,7 @@ def fit_logistic(df, subset_predictors = False, subset = None, normalize = True)
         cols = subset
 
     else:
-        cols = df.columns.tolist()[:-1]
+        cols = df.columns.tolist()
 
     # Fit regression
     logit = sm.Logit(df['Success'], df[cols])

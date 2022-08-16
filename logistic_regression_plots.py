@@ -16,32 +16,48 @@ import matplotlib as mpl
 
 from logistic_regression_functions import normalize_columns, fit_logistic
 
+from utils import normalize_columns, binary_performance_mask
+
 ################################################################################
 
 def construct_contour_map(model, ax, constant, contour_cmap, dot_cmap, levels, xgrid, ygrid, \
     xvar, yvar, base):
 
-    dta = model.data
+    dta = normalize_columns(model.data)
 
     result = model.run()
+
+    dta['Intercept'] = np.ones(np.shape(dta)[0])
+    dta['Success'] = binary_performance_mask(model)
 
     # find probability of success for x=xgrid, y=ygrid
     X, Y = np.meshgrid(xgrid, ygrid)
     x = X.flatten()
     y = Y.flatten()
-    
+
+
+    # GENERALIZE THIS
     if constant == 'x3': # 3rd predictor held constant at base value
-        grid = np.column_stack([np.ones(len(x)),x,y,np.ones(len(x))*base[2]])
+        grid = np.column_stack([x, y, np.ones(len(x))*base[2], np.ones(len(x))])
+
     elif constant == 'x2': # 2nd predictor held constant at base value
-        grid = np.column_stack([np.ones(len(x)),x,np.ones(len(x))*base[1],y])
+        grid = np.column_stack([x, np.ones(len(x))*base[1], y, np.ones(len(x))])
+
     else: # 1st predictor held constant at base value
-        grid = np.column_stack([np.ones(len(x)),np.ones(len(x))*base[0],x,y])
+        grid = np.column_stack([np.ones(len(x))*base[0], x, y, np.ones(len(x))])
+
+    #model.grid = grid
+    #model.x = x
+    #model.y = y
+    #model.dta = dta
+    #model.z = z
+    #model.Z = Z
 
     z = result.predict(grid)
     Z = np.reshape(z, np.shape(X))
 
     contourset = ax.contourf(X, Y, Z, levels, cmap=contour_cmap)
-    ax.scatter(dta[xvar].values, dta[yvar].values, c=dta['Success'].values, edgecolor='none', cmap=dot_cmap)
+    ax.scatter(dta[xvar].values, dta[yvar].values, c=dta['Success'].values, edgecolor='none', cmap=dot_cmap, alpha = 0.2)
     ax.set_xlim(np.min(X),np.max(X))
     ax.set_ylim(np.min(Y),np.max(Y))
     ax.set_xlabel(xvar,fontsize=24)
@@ -69,11 +85,11 @@ def plot_single_contour(model, x, y):
     ygrid = np.arange(-0.1,1.1,0.01)
 
     # define base values of 3 predictors
-    base = [0.5, 0.5, 0.5]
+    base = np.mean(normalize_columns(model.data)).values
+    print(f'Base: {base}')
 
     # Drop intercept and success columns
-    param_data = model.data.drop(['Intercept', 'Success'], axis = 1)
-    param_labs = param_data.columns
+    param_labs = model.data.columns
 
     # Determine how many subplots to make
     n_params = int(len(model.data.columns))
@@ -82,6 +98,8 @@ def plot_single_contour(model, x, y):
     fig, ax = plt.subplots()
 
     constant_col = [x for x in param_labs if x not in [x, y]]
+    constant_col = 'x1'
+    print(f'Constant: {constant_col}')
 
         # plot contour map when 3rd predictor ('x3') is held constant
     contourset = construct_contour_map(model, ax, constant_col, contour_cmap, dot_cmap, contour_levels, xgrid, ygrid, \
