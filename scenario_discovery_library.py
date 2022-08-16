@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+# Statistical tools
 import statsmodels.api as sm
 from scipy import stats
 
@@ -51,7 +52,7 @@ class LogisticRegression:
         -------
         fit_model
         """
-
+        # Noramlize parameters
         df = normalize_columns(self.data)
 
         # Add a column of intercepts
@@ -68,7 +69,6 @@ class LogisticRegression:
         else:
             cols = df.drop('Success', axis = 1).columns.tolist()
             print(f'Using all cols: {cols}')
-
 
         # Fit regression
         logit = sm.Logit(df['Success'], df[cols])
@@ -118,22 +118,10 @@ class LogisticRegression:
 class PRIM:
 
     def algorithm_run(self):
-
-        self.results = 0
-
-        # Store a bool indicating successful execution
-        self.complete = True
-        return self.results
-
+        pass
 
     def count_coi(self, indices):
-        """
-        Given a set of indices on y, count the number of cases of interest in the set.
-        """
-
-        y_subset = self.y[indices]
-        coi = y_subset[y_subset == True].shape[0]
-        return coi
+        pass
 
 
 ################################################################################
