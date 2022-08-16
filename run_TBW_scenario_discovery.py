@@ -22,7 +22,7 @@ from numpy.lib.stride_tricks import as_strided
 from logistic_regression_functions import fit_logistic, rank_significance, normalize_columns
 
 
-from scenario_discovery_library import LinearRegression
+from scenario_discovery_library import LogisticRegression
 
 
 #%%
@@ -40,8 +40,8 @@ performance_data_path = 'C:/Users/tja73/Box/TampaBayWater/PerformanceAssessment/
 input_data_path = 'C:/Users/tja73/Box/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
 
 # Laptop
-performance_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater\PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_performance_data'
-input_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
+# performance_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater\PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_performance_data'
+# input_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
 
 
 #%%
@@ -72,29 +72,42 @@ for run in consider_runs:
 ### Prepare data frame for SD
 
 
-
-
 ## Annual metrics
-param_labs = ['Demands', 'Min. Reservoir']
 
-
+# Generate data frame
 sow_data = pd.DataFrame({'Demands' : monthly_demands.flatten(), 
-                         'Min Reservoir' : monthly_min_reservoir.flatten(), 
+                         'Min. Reservoir' : monthly_min_reservoir.flatten(), 
                          'Avg. Reservoir' : monthly_avg_reservoir.flatten()})
 
-# Test normalization
-#ndf = normalize_columns(sow_data)
-#sow_data['Intercept'] = 1
 
 # Generate object
-SD_model = LinearRegression(sow_data, shortfall_count.flatten(), param_labs, threshold = 7)
+SD_model = LogisticRegression(sow_data, shortfall_count.flatten(), threshold = 7)
 
 
-fit_model = SD_model.run()
+# Fit the model 
+fit_model = SD_model.fit()
 
-#ranks = SD_model.rank_inputs()
+# Rank the parameters by significance
+ranks = SD_model.rank_inputs()
 
-SD_model.plot_parameter_contour_map('Avg. Reservoir', 'Min Reservoir')
+# Plot the success contour map for a single parameter pair
+SD_model.plot_parameter_contour_map(variable_params = ['Avg. Reservoir', 'Min Reservoir'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

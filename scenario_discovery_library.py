@@ -22,12 +22,10 @@ from utils import binary_performance_mask, normalize_columns
 
 ################################################################################
 
-
-
-class LinearRegression:
+class LogisticRegression:
 
     def __init__(self,
-                inputs, performance, param_names,
+                inputs, performance,
                 threshold = None, threshold_type = '>'):
 
         # Store values
@@ -94,14 +92,24 @@ class LinearRegression:
         return self.ranks
 
 
+    def plot_parameter_contour_map(self, variable_params):
+        """
+        Produces a scatter plot of success/fail scenarios, overlayed on a
+        contour map showing the probability of sucess calculated from a
+        best-fit logistic regression.
+
+        All parameters are used in the logistic regression.
+
+        Only the variable_params are considered in the 2D plot; other params
+        are constant at their base (mean) value.
+        """
+        plot_single_contour(self, variable_params)
+        return
+
+
     def plot_all_contours(self):
-        plot_many_contours(self)
+        #WIP
         return
-
-    def plot_parameter_contour_map(self, x, y):
-        plot_single_contour(self, x, y)
-        return
-
 
 
 

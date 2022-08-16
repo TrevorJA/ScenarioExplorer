@@ -21,9 +21,14 @@ from utils import normalize_columns, binary_performance_mask
 ################################################################################
 
 def construct_contour_map(model, ax, constant, contour_cmap, dot_cmap, levels, xgrid, ygrid, \
-    xvar, yvar, base):
+    variable_params, base):
+
+    xvar = variable_params[0]
+    yvar = variable_params[1]
 
     dta = normalize_columns(model.data)
+
+    all_params = dta.columns.to_list()
 
     result = model.run()
 
@@ -35,18 +40,25 @@ def construct_contour_map(model, ax, constant, contour_cmap, dot_cmap, levels, x
     x = X.flatten()
     y = Y.flatten()
 
+    variable_param_indeces = [all_params.index(variable_params[i]) for i in range(len(variable_params))]
 
-    # GENERALIZE THIS
-    if constant == 'x3': # 3rd predictor held constant at base value
-        grid = np.column_stack([x, y, np.ones(len(x))*base[2], np.ones(len(x))])
+    # Create a grid of 1s with n-dimensions corresponding to n-parameters (add 1 more for intercept)
+    grid = [np.ones(len(x)) for _ in range(len(all_params) + 1)]
 
-    elif constant == 'x2': # 2nd predictor held constant at base value
-        grid = np.column_stack([x, np.ones(len(x))*base[1], y, np.ones(len(x))])
+    for i in range(len(all_params)):
 
-    else: # 1st predictor held constant at base value
-        grid = np.column_stack([np.ones(len(x))*base[0], x, y, np.ones(len(x))])
+        if i == variable_param_indeces[0]:
+            grid[i] = x
 
-    #model.grid = grid
+        elif i == variable_param_indeces[1]:
+            grid[i] = y
+
+        else:
+            grid[i] = grid[i] * base[i]
+
+    grid = np.column_stack(grid)
+
+    model.grid = grid
     #model.x = x
     #model.y = y
     #model.dta = dta
@@ -69,7 +81,9 @@ def construct_contour_map(model, ax, constant, contour_cmap, dot_cmap, levels, x
 
 ################################################################################
 
-def plot_single_contour(model, x, y):
+def plot_single_contour(model, variable_params):
+
+    assert (len(variable_params) == 2), 'variable_params must contain only two parameter names.'
 
     # Color map for dots representing success (light blue) and fails (dark red)
     dot_cmap = mpl.colors.ListedColormap(np.array([[227,26,28],[166,206,227]])/255.0)
@@ -97,13 +111,13 @@ def plot_single_contour(model, x, y):
     # Set up plot
     fig, ax = plt.subplots()
 
-    constant_col = [x for x in param_labs if x not in [x, y]]
-    constant_col = 'x1'
-    print(f'Constant: {constant_col}')
+    # Define the constant parameters as those not in the variable pair
+    constant_params = [x for x in param_labs if x not in variable_params]
+    print(f'Constants: {constant_params}')
 
-        # plot contour map when 3rd predictor ('x3') is held constant
-    contourset = construct_contour_map(model, ax, constant_col, contour_cmap, dot_cmap, contour_levels, xgrid, ygrid, \
-        x, y, base)
+    # plot contour map when 3rd predictor ('x3') is held constant
+    contourset = construct_contour_map(model, ax, constant_params, contour_cmap, dot_cmap, contour_levels, xgrid, ygrid, \
+        variable_params, base)
 
     # Finish the plot
     fig.subplots_adjust(wspace=0.3,hspace=0.3,right=0.8)
