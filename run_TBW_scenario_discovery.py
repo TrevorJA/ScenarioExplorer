@@ -40,8 +40,8 @@ performance_data_path = 'C:/Users/tja73/Box/TampaBayWater/PerformanceAssessment/
 input_data_path = 'C:/Users/tja73/Box/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
 
 # Laptop
-# performance_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater\PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_performance_data'
-# input_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
+performance_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater\PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_performance_data'
+input_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
 
 
 #%%
@@ -85,16 +85,22 @@ SD_model = LogisticRegression(sow_data, shortfall_count.flatten(), threshold = 7
 
 
 # Fit the model 
-fit_model = SD_model.fit()
+fit_model = SD_model.fit_logistic()
 
 # Rank the parameters by significance
-ranks = SD_model.rank_inputs()
+# ranks = SD_model.rank_inputs()
 
 # Plot the success contour map for a single parameter pair
-SD_model.plot_parameter_contour_map(variable_params = ['Avg. Reservoir', 'Min Reservoir'])
+SD_model.plot_parameter_contour_map(variable_params = ['Demands', 'Min. Reservoir'])
 
 
+# Check the change in SOS
 
+for n in range(29):
+    SD_model = LogisticRegression(sow_data, shortfall_count.flatten(), threshold = n)
+
+    # Plot the success contour map for a single parameter pair
+    SD_model.plot_parameter_contour_map(variable_params = ['Demands', 'Min. Reservoir'])
 
 
 

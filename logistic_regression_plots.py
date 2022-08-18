@@ -16,7 +16,8 @@ import matplotlib as mpl
 
 from logistic_regression_functions import normalize_columns, fit_logistic
 
-from utils import normalize_columns, binary_performance_mask
+from utils import normalize_columns, binary_performance_mask,
+                    calculate_contour_area
 
 ################################################################################
 
@@ -135,6 +136,114 @@ def plot_single_contour(model, variable_params):
 ################################################################################
 
 
+def calculate_area_SOS_over_range(model, variable_params, threshold_range):
+
+    assert (len(variable_params) == 2), 'variable_params must contain only two parameter names.'
+
+    # Color map for dots representing success (light blue) and fails (dark red)
+    dot_cmap = mpl.colors.ListedColormap(np.array([[227,26,28],[166,206,227]])/255.0)
+
+    # Define color map for probability contours
+    contour_cmap = mpl.cm.get_cmap('RdBu')
+
+    # Define probability contours
+    contour_levels = np.arange(0.0, 1.05,0.1)
+
+    # Define grids for each predictor (they are normalized)
+    xgrid = np.arange(-0.1,1.1,0.01)
+    ygrid = np.arange(-0.1,1.1,0.01)
+
+    # define base values of 3 predictors
+    base = np.mean(normalize_columns(model.data)).values
+    print(f'Base: {base}')
+
+    # Drop intercept and success columns
+    param_labs = model.data.columns
+
+    # Determine how many subplots to make
+    n_params = int(len(model.data.columns))
+
+    # Define the constant parameters as those not in the variable pair
+    constant_params = [x for x in param_labs if x not in variable_params]
+    print(f'Constants: {constant_params}')
+
+    # Calculate the contour set
+    xvar = variable_params[0]
+    yvar = variable_params[1]
+
+    dta = normalize_columns(model.data)
+    all_params = dta.columns.to_list()
+
+    dta['Intercept'] = np.ones(np.shape(dta)[0])
+    variable_param_indeces = [all_params.index(variable_params[i]) for i in range(len(variable_params))]
+
+    # A list of area sizes
+    a = []
+
+    for n in range(threshold_range[0], threshold_range[1]):
+        model.threshold = n
+
+        result = model.run()
+
+        dta['Success'] = binary_performance_mask(model)
+
+        # find probability of success for x=xgrid, y=ygrid
+        X, Y = np.meshgrid(xgrid, ygrid)
+        x = X.flatten()
+        y = Y.flatten()
+
+        # Create a grid of 1s with n-dimensions corresponding to n-parameters (add 1 more for intercept)
+        grid = [np.ones(len(x)) for _ in range(len(all_params) + 1)]
+
+        for i in range(len(all_params)):
+
+            if i == variable_param_indeces[0]:
+                grid[i] = x
+            elif i == variable_param_indeces[1]:
+                grid[i] = y
+            else:
+                grid[i] = grid[i] * base[i]
+
+        grid = np.column_stack(grid)
+
+        model.grid = grid
+
+        z = result.predict(grid)
+        Z = np.reshape(z, np.shape(X))
+
+        cs = plt.contour(X, Y, Z, contour_levels)
+
+        # Get the SOS contour
+        contour = cs.collections(0)
+        vertices = contour.get_paths()[0].vertices
+
+        # Calculate the area of the contour
+        a.append(calculate_contour_area(vertices))
+
+
+    # Plot results
+
+    fig.subplots_adjust(wspace=0.3,hspace=0.3,right=0.8)
+    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    cbar = fig.colorbar(contourset, cax=cbar_ax)
+    cbar_ax.set_ylabel('Probability of Success',fontsize=20)
+    #yticklabels = cbar.ax.get_yticklabels()
+    #cbar.ax.set_yticklabels(yticklabels,fontsize=18)
+    fig.set_size_inches([14.5,8])
+    fig.savefig('Fig1.png')
+    plt.show()
+    fig.clf()
+    return
+
+
+
+
+
+
+
+
+
+
 def plot_many_contours(model):
     """WIP"""
 
@@ -193,3 +302,6 @@ def plot_many_contours(model):
     plt.show()
     fig.clf()
     return
+
+
+################################################################################

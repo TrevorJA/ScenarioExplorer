@@ -34,7 +34,9 @@ class LogisticRegression:
         self.performance = performance
         self.threshold = threshold
         self.threshold_type = threshold_type
-        self.param_names = param_names
+
+        # Make a dataframe combing inputs and performance
+        self.data = pd.DataFrame(self.inputs)
 
 
         # Envoke the parent class (if expanding)
@@ -78,9 +80,6 @@ class LogisticRegression:
 
     def run(self):
 
-        # Make a dataframe combing inputs and performance
-        self.data = pd.DataFrame(self.inputs)
-
         # Fit the model
         self.linear_model = self.fit_logistic()
 
@@ -105,6 +104,10 @@ class LogisticRegression:
         """
         plot_single_contour(self, variable_params)
         return
+
+    def plot_area_SOS(self, threshold_range):
+
+
 
 
     def plot_all_contours(self):

@@ -16,6 +16,9 @@ from scipy import stats
 
 from utils import normalize_columns, binary_performance_mask
 
+from logistic_regression_plots import construct_contour_map
+
+
 
 ################################################################################
 
@@ -53,6 +56,8 @@ def fit_logistic(df, subset_predictors = False, subset = None, normalize = True)
 
     return result
 
+
+################################################################################
 
 
 def rank_significance(df):
@@ -94,3 +99,6 @@ def rank_significance(df):
     # Rank based upon the pseudo_R2
     ranked_predictors = outputs.sort_values('Psuedo-R2', ascending = False)
     return ranked_predictors
+
+
+################################################################################
