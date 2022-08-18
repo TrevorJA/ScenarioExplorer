@@ -16,7 +16,6 @@ from scipy import stats
 
 from utils import normalize_columns, binary_performance_mask
 
-from logistic_regression_plots import construct_contour_map
 
 
 

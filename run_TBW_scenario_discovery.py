@@ -19,9 +19,6 @@ import matplotlib.pyplot as plt
 from numpy.lib.stride_tricks import as_strided
 
 
-from logistic_regression_functions import fit_logistic, rank_significance, normalize_columns
-
-
 from scenario_discovery_library import LogisticRegression
 
 
@@ -40,8 +37,8 @@ performance_data_path = 'C:/Users/tja73/Box/TampaBayWater/PerformanceAssessment/
 input_data_path = 'C:/Users/tja73/Box/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
 
 # Laptop
-performance_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater\PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_performance_data'
-input_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
+# performance_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater\PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_performance_data'
+# input_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
 
 
 #%%
@@ -69,6 +66,29 @@ for run in consider_runs:
 
 #%%
 
+# Pre-SD exploration
+
+values, base = np.histogram(shortfall_count.flatten(), bins = 40)
+
+cumulative = np.cumsum(values)
+norm_cumulative = (cumulative - min(cumulative)) / (max(cumulative) - min(cumulative)) * 100
+
+a1 = plt.subplot()
+a1.hist(shortfall_count.flatten(), bins = 40, color = 'orange')
+a1.set_ylabel('Count across 1,000 realizations')
+
+a2 = a1.twinx()
+a2.plot(base[:-1], norm_cumulative)
+a2.set_ylabel('Cumulative distribution (%)')
+plt.xlabel('Shortfall duration (days)')
+
+
+
+
+
+
+#%%
+
 ### Prepare data frame for SD
 
 
@@ -85,24 +105,19 @@ SD_model = LogisticRegression(sow_data, shortfall_count.flatten(), threshold = 7
 
 
 # Fit the model 
-fit_model = SD_model.fit_logistic()
+#fit_model = SD_model.fit_logistic()
 
 # Rank the parameters by significance
 # ranks = SD_model.rank_inputs()
 
 # Plot the success contour map for a single parameter pair
-SD_model.plot_parameter_contour_map(variable_params = ['Demands', 'Min. Reservoir'])
+parameters_of_interest = ['Demands', 'Min. Reservoir']
+
+#SD_model.plot_parameter_contour_map(variable_params = parameters_of_interest)
 
 
 # Check the change in SOS
-
-for n in range(29):
-    SD_model = LogisticRegression(sow_data, shortfall_count.flatten(), threshold = n)
-
-    # Plot the success contour map for a single parameter pair
-    SD_model.plot_parameter_contour_map(variable_params = ['Demands', 'Min. Reservoir'])
-
-
+SD_model.plot_area_SOS(variable_params = parameters_of_interest, threshold_range = [1,29])
 
 
 

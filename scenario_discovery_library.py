@@ -17,7 +17,7 @@ from scipy import stats
 
 # External functions
 from logistic_regression_functions import rank_significance
-from logistic_regression_plots import plot_many_contours, plot_single_contour
+from logistic_regression_plots import plot_many_contours, plot_single_contour, plot_area_SOS_over_range
 
 from utils import binary_performance_mask, normalize_columns
 
@@ -105,7 +105,9 @@ class LogisticRegression:
         plot_single_contour(self, variable_params)
         return
 
-    def plot_area_SOS(self, threshold_range):
+    def plot_area_SOS(self, variable_params, threshold_range):
+        plot_area_SOS_over_range(self, variable_params, threshold_range)
+        return
 
 
 

@@ -16,8 +16,7 @@ import matplotlib as mpl
 
 from logistic_regression_functions import normalize_columns, fit_logistic
 
-from utils import normalize_columns, binary_performance_mask,
-                    calculate_contour_area
+from utils import normalize_columns, binary_performance_mask, calculate_linear_contour_area
 
 ################################################################################
 
@@ -136,7 +135,7 @@ def plot_single_contour(model, variable_params):
 ################################################################################
 
 
-def calculate_area_SOS_over_range(model, variable_params, threshold_range):
+def plot_area_SOS_over_range(model, variable_params, threshold_range):
 
     assert (len(variable_params) == 2), 'variable_params must contain only two parameter names.'
 
@@ -147,11 +146,11 @@ def calculate_area_SOS_over_range(model, variable_params, threshold_range):
     contour_cmap = mpl.cm.get_cmap('RdBu')
 
     # Define probability contours
-    contour_levels = np.arange(0.0, 1.05,0.1)
+    contour_levels = np.arange(0.0, 1.0,0.1)
 
     # Define grids for each predictor (they are normalized)
-    xgrid = np.arange(-0.1,1.1,0.01)
-    ygrid = np.arange(-0.1,1.1,0.01)
+    xgrid = np.arange(0,1,0.01)
+    ygrid = np.arange(0,1,0.01)
 
     # define base values of 3 predictors
     base = np.mean(normalize_columns(model.data)).values
@@ -213,24 +212,26 @@ def calculate_area_SOS_over_range(model, variable_params, threshold_range):
 
         cs = plt.contour(X, Y, Z, contour_levels)
 
+        model.cs = cs
+
         # Get the SOS contour
-        contour = cs.collections(0)
+        contour = cs.collections[-1]
         vertices = contour.get_paths()[0].vertices
 
         # Calculate the area of the contour
-        a.append(calculate_contour_area(vertices))
+        a.append(calculate_linear_contour_area(vertices))
+        model.areas = a
 
 
     # Plot results
-
-    fig.subplots_adjust(wspace=0.3,hspace=0.3,right=0.8)
-    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    cbar = fig.colorbar(contourset, cax=cbar_ax)
-    cbar_ax.set_ylabel('Probability of Success',fontsize=20)
-    #yticklabels = cbar.ax.get_yticklabels()
-    #cbar.ax.set_yticklabels(yticklabels,fontsize=18)
-    fig.set_size_inches([14.5,8])
-    fig.savefig('Fig1.png')
+    fig, ax = plt.subplots(dpi = 150)
+    ax.plot(range(threshold_range[0], threshold_range[1]), a, label = '$Area_{SOS}$', color = 'green')
+    ax.set_title('Influence of threshold value on safe operating space')
+    ax.set_xlabel('Threshold value')
+    ax.set_ylabel('Relative area of SOS')
+    plt.legend()
+    fig.set_size_inches([7,5])
+    fig.savefig('area_of_SOS.png')
     plt.show()
     fig.clf()
     return
