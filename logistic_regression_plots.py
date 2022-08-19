@@ -30,7 +30,7 @@ def construct_contour_map(model, ax, constant, contour_cmap, dot_cmap, levels, x
 
     all_params = dta.columns.to_list()
 
-    result = model.run()
+    result = model.fit_logistic(subset_predictors= True, subset = variable_params)
 
     dta['Intercept'] = np.ones(np.shape(dta)[0])
     dta['Success'] = binary_performance_mask(model)
@@ -43,9 +43,9 @@ def construct_contour_map(model, ax, constant, contour_cmap, dot_cmap, levels, x
     variable_param_indeces = [all_params.index(variable_params[i]) for i in range(len(variable_params))]
 
     # Create a grid of 1s with n-dimensions corresponding to n-parameters (add 1 more for intercept)
-    grid = [np.ones(len(x)) for _ in range(len(all_params) + 1)]
+    grid = [np.ones(len(x)) for _ in range(len(variable_params) + 1)]
 
-    for i in range(len(all_params)):
+    for i in range(len(variable_params)):
 
         if i == variable_param_indeces[0]:
             grid[i] = x
@@ -62,8 +62,6 @@ def construct_contour_map(model, ax, constant, contour_cmap, dot_cmap, levels, x
     #model.x = x
     #model.y = y
     #model.dta = dta
-    #model.z = z
-    #model.Z = Z
 
     z = result.predict(grid)
     Z = np.reshape(z, np.shape(X))

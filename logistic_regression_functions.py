@@ -22,7 +22,7 @@ from utils import normalize_columns, binary_performance_mask
 ################################################################################
 
 
-def fit_logistic(df, subset_predictors = False, subset = None, normalize = True):
+def fit_logistic(df, subset_predictors = False, subset = [], normalize = True):
     """
     Parameters:
     ----------
@@ -44,7 +44,8 @@ def fit_logistic(df, subset_predictors = False, subset = None, normalize = True)
 
     if subset_predictors:
         # Get a list of columns to use as predictors (and success col)
-        cols = subset
+        print('Using a subset of predictors.')
+        cols = subset.append('Intercept')
 
     else:
         cols = df.columns.tolist()

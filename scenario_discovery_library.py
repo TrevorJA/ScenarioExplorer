@@ -38,9 +38,7 @@ class LogisticRegression:
         # Make a dataframe combing inputs and performance
         self.data = pd.DataFrame(self.inputs)
 
-
-        # Envoke the parent class (if expanding)
-    def fit_logistic(self, subset_predictors = False, subset = None, normalize = True):
+    def fit_logistic(self, subset_predictors = False, subset = False, normalize = True):
         """
         Parameters:
         ----------
@@ -59,21 +57,27 @@ class LogisticRegression:
 
         # Add a column of intercepts
         df['Intercept'] = np.ones(np.shape(self.data)[0])
-
+        self.subset = subset
         # Apply mask to performance
         df['Success'] = binary_performance_mask(self)
 
         if subset_predictors:
             # Get a list of columns to use as predictors (and success col)
-            cols = subset
+            print('Using a subset of predictors.')
+            cols = subset.copy()
+            cols.append('Intercept')
+
             print(f'Using cols: {cols}')
+            self.cols = cols
+            logit = sm.Logit(df['Success'], df[cols])
 
         else:
             cols = df.drop('Success', axis = 1).columns.tolist()
             print(f'Using all cols: {cols}')
+            logit = sm.Logit(df['Success'], df[cols])
 
         # Fit regression
-        logit = sm.Logit(df['Success'], df[cols])
+
         result = logit.fit()
 
         return result
