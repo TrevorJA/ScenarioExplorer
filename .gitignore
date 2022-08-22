@@ -1,3 +1,6 @@
 __pycache__/*
 *.png
 LICENSE
+TBW_SD_data/*.csv
+TBW_SD_data/*
+*.png
