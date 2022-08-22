@@ -18,7 +18,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from numpy.lib.stride_tricks import as_strided
 
-
+from SSI_drought_calculation import find_droughts, plot_SSI_droughts, running_mean
 from scenario_discovery_library import LogisticRegression
 
 
@@ -37,8 +37,8 @@ performance_data_path = 'C:/Users/tja73/Box/TampaBayWater/PerformanceAssessment/
 input_data_path = 'C:/Users/tja73/Box/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
 
 # Laptop
-performance_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater\PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_performance_data'
-input_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
+# performance_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater\PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_performance_data'
+# input_data_path = 'C:/Users/tjame/Box Sync/TampaBayWater/PerformanceAssessment/TBW_Performance_Assessment/Supply_Assessment/scenario_discovery/realization_input_data'
 
 
 #%%
@@ -118,6 +118,17 @@ MB_in = np.loadtxt(f'./TBW_SD_data/MB_monthly_data.csv', delimiter = ',')[:,0:-1
 CYC_in = np.loadtxt(f'./TBW_SD_data/CYC_monthly_data.csv', delimiter = ',')[:,0:-1]
 STL_in = np.loadtxt(f'./TBW_SD_data/STL_monthly_data.csv', delimiter = ',')[:,0:-1]
 PC_in = np.loadtxt(f'./TBW_SD_data/PC_monthly_data.csv', delimiter = ',')[:,0:-1]
+
+# Load a full 300 year streamflow set
+#ALA_all = np.loadtxt(f'./TBW_SD_data/full_ALA_monthly_data.csv', delimiter = ',')
+#MB_all = np.loadtxt(f'./TBW_SD_data/full_MB_monthly_data.csv', delimiter = ',')
+
+ALA_all = np.loadtxt(f'./TBW_SD_data/full_ALA_daily_data.csv', delimiter = ',')
+MB_all = np.loadtxt(f'./TBW_SD_data/full_MB_daily_data.csv', delimiter = ',')
+
+
+dp, db, ssi = find_droughts(ALA_in[1,:], historical = ALA_all, timestep = 'day')
+
 
 # Arrange dataframe
 data_in = pd.DataFrame({'Alafia Flow': ALA_in.flatten(),
