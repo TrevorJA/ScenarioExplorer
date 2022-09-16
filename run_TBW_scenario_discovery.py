@@ -6,8 +6,6 @@ Summer 2022
 
 Explores the 1,000 realizations of demand uncertainty used in TBW model.
 
-Methods:
-
 
 
 """
@@ -42,9 +40,7 @@ input_data_path = 'C:/Users/tja73/Box/TampaBayWater/PerformanceAssessment/TBW_Pe
 
 
 #%%
-
 ### Load data (OROP)
-
 for run in consider_runs:
 
     ## Load performance data
@@ -81,7 +77,6 @@ plt.xlabel('Shortfall duration (days)')
 #%%
 
 ### Prepare data frame for SD
-
 # Generate data frame of monthly inputs
 sow_data = pd.DataFrame({'Demands' : monthly_demands.flatten(),
                          'Min. Reservoir' : monthly_min_reservoir.flatten(),
