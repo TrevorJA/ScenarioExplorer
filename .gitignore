@@ -1,4 +1,8 @@
 __pycache__/*
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
 *.png
 LICENSE
 TBW_SD_data/*.csv

@@ -19,7 +19,7 @@ from utils import normalize_columns, binary_performance_mask
 
 
 
-################################################################################
+
 
 
 def fit_logistic(df, subset_predictors = False, subset = [], normalize = True):
