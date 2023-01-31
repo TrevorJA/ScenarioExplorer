@@ -10,9 +10,11 @@ ScenarioExplorer is an open-source Python package to aid in scenario discovery.
 `ScenarioExplorer(*args, **kwargs)`
 
 > \*\*kwargs
-> 	`fail_threshold` : (float) Numeric performance metric threshold, separating *success* and *failure* conditions.
-> 	`fail_criteria`: (str) Options include "<", "<=", ">", ">="
-> 	`method`: (str) Classification algorithm to use. Currently supported options are "logistic" and "boosted-trees"
+> 	- `fail_threshold` : (float) Numeric performance metric threshold, separating *success* and *failure* conditions.
+>
+> 	- `fail_criteria`: (str) Options include "<", "<=", ">", ">="
+>
+> 	- `method`: (str) Classification algorithm to use. Currently supported options are "logistic" and "boosted-trees"
 
 
 
@@ -22,44 +24,12 @@ ScenarioExplorer is an open-source Python package to aid in scenario discovery.
 
 The [gradient boosted tree](https://en.wikipedia.org/wiki/Gradient_boosting#Gradient_tree_boosting) algorithm uses [classsification (AKA decision) trees](https://en.wikipedia.org/wiki/Decision_tree_learning) to iteratively sub-divide the parameter space, so that divided regions best describe the division of *success* or *failure* occurrences.
 
-```python
-import ScenarioExplorer
-
-# XY = training data
-
-## Boosted trees (nonlinear boundary)
-SE = ScenarioExplorer.ScenarioExplorer(XY,
-                                       fail_threshold = 0.5,
-                                       fail_criteria = '<=',
-                                       method = 'boosted-trees')
-```
 
 ### Logistic Regression
 
 [Logistic regression](https://en.wikipedia.org/wiki/Logistic_regression) models estimate the ***probability*** that an event is classified as a success (1) as opposed to a failure (0) as a function of different covariates.
 
 It may also identify which factors influence ability to meet those performance goals.
-
-```python
-import ScenarioExplorer
-
-# XY = training data
-
-## Logistic regression (linear)
-SE = ScenarioExplorer.ScenarioExplorer(XY,
-                                       fail_threshold = 0.5,
-                                       fail_criteria = '<=',
-                                       method = 'logistic')
-```
-
-
-#### Mathematical definition
-
-For $p_i$ representing the probability that performance in the $i^{th}$ SOW is classified as a success and $X_i$ represents a vector of covariates describing the $i^{th}$ SOW:
-$$\tag{1.0} ln\Big(\frac{p_i}{1-p_i}\Big) = X_i^T\beta$$
-
-The coefficients on the covariates, $\beta$, are estimated using [[Maximum Likelihood Estimation]].
-
 
 
 ## Data Visualization
@@ -71,18 +41,14 @@ Currently, it supports:
 - *More to come...*
 
 The `ScenarioExplorer.plot_contour(vars)` will train the classification model, and use to model to predict classifications across a two-dimensional grid of parameter values, and plot a map of the classification regions. `vars` is a list of two input parameter names.
-```python
-plot_variables = ['x1', 'x2']
-SE.plot_contour(plot_variables,
-                save_figure = False)
-```
-
 
 
 ## References
 
 (1) [*Scenario discovery in Python.* Jan Kwakkel. (2015)](https://waterprogramming.wordpress.com/2015/08/05/scenario-discovery-in-python/)
+
 (2) [*A step by step tutorial for scenario discovery with gradient boosted trees*. David Gold. (2022)](https://waterprogramming.wordpress.com/2022/04/22/a-step-by-step-tutorial-for-scenario-discovery-with-gradient-boosted-trees/)
+
 (3) [*Logistic regression for Scenario Discovery*. Julie Quinn. (2018)](https://waterprogramming.wordpress.com/2018/05/04/logistic-regression-for-scenario-discovery/)
 
 
