@@ -2,8 +2,10 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 
 class LogisticRegressionClassifier:
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.classifier = LogisticRegression()
+        self.max_iterations = kwargs.get('max_iterations', 200)
+
 
     def train(self, X, y):
         """
@@ -11,12 +13,21 @@ class LogisticRegressionClassifier:
         :param X: 2D numpy array of shape (num_samples, num_features)
         :param y: 1D numpy array of shape (num_samples,)
         """
-        self.classifier.fit(X, y)
 
-    def predict(self, X):
+        self.classifier.max_iter = self.max_iterations
+        self.classifier.fit(X, y)
+        return
+
+    def predict(self, XTe):
         """
         Predicts the class for each sample in the provided data.
         :param X: 2D numpy array of shape (num_samples, num_features)
         :return: 1D numpy array of shape (num_samples,)
         """
-        return self.classifier.predict(X)
+        return self.classifier.predict(XTe)
+
+    def get_params(self):
+        """
+        Returns the parameters for the model.
+        """
+        return self.classifier.get_params()
