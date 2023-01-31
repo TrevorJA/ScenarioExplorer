@@ -145,7 +145,7 @@ SE.plot_contour(plot_variables,
                 save_figure = False)
 ```
 
-![Logistic regression classification plot](figures/ScenarioExplorer.png)
+![Logistic regression classification plot](./figures/ScenarioExplorer.png)
 
 
 ### Boosted trees
