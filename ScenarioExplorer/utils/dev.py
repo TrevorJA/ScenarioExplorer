@@ -1,3 +1,10 @@
+"""
+Trevor Amestoy
+Cornell University
+
+UNDER DEVELOPMENT: DO NOT USE
+"""
+
 
 def check_kwargs(keys, input_kwargs):
     """Is this needed?"""

@@ -1,9 +1,8 @@
 """
 Trevor Amestoy
-August 2022
 Cornell University
 
-Used to identify periods of drought using SSI6.
+UNDER DEVELOPMENT: DO NOT USE
 """
 
 import numpy as np

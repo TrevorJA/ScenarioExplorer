@@ -26,7 +26,7 @@ XY = pd.DataFrame({'x1': np.random.rand(N),
                    'x5': np.random.rand(N)})
 
 # Output metric y is a function of others
-XY['performance'] = XY['x1'] * 2*XY['x2']**2 + XY['x3']*XY['x2']**2 + 0.2*XY['x4']
+XY['performance'] = XY['x1'] * 3*XY['x2']**2
 
 
 #%%
@@ -34,23 +34,24 @@ XY['performance'] = XY['x1'] * 2*XY['x2']**2 + XY['x3']*XY['x2']**2 + 0.2*XY['x4
 ### Use the model
 
 ## Boosted trees (nonlinear boundary)
-SE = ScenarioExplorer.ScenarioExplorer(XY, 
+SE = ScenarioExplorer.ScenarioExplorer(XY,
                                        fail_threshold = 0.5,
                                        fail_criteria = '<=',
                                        method = 'boosted-trees')
 
+# Choose variables of interest
 plot_variables = ['x1', 'x2']
 
-p1 = SE.plot_contour(plot_variables, 
-                     save_figure = False)
+SE.plot_contour(plot_variables,
+                save_figure = False)
 
 
 ## Logistic regression (linear)
-SE = ScenarioExplorer.ScenarioExplorer(XY, 
+SE = ScenarioExplorer.ScenarioExplorer(XY,
                                        fail_threshold = 0.5,
                                        fail_criteria = '<=',
                                        method = 'logistic')
 
-plot_variables = ['x2', 'x3']
-p1 = SE.plot_contour(plot_variables, 
-                     save_figure = False)
+plot_variables = ['x1', 'x2']
+SE.plot_contour(plot_variables,
+                save_figure = False)
