@@ -145,7 +145,7 @@ SE.plot_contour(plot_variables,
                 save_figure = False)
 ```
 
-![[figures/ScenarioExplorer.png | 600]]
+![Logistic regression classification plot](figures/ScenarioExplorer.png)
 
 
 ### Boosted trees
@@ -165,5 +165,5 @@ SE.plot_contour(plot_variables,
                 save_figure = False)
 ```
 
-![[/figures/ScenarioExplorer-1.png | 600]]
+![Boosted Tree Classification Plot](./figures/ScenarioExplorer-1.png)
 Notice that the boosted tree algorithm does a better job describing the nonlinearity of the success-boundary compared to the logistic regression.  However, we are not able to estimate the *probability* of success using boosted trees, which is a strength of the logistic model.
