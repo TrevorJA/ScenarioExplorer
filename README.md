@@ -92,7 +92,7 @@ XY = pd.DataFrame({'x1': np.random.rand(N),
 XY['performance'] = XY['x1'] * 3*XY['x2']**2
 ```
 
->![Warning] Input data formatting
+>[!warning] Input data formatting
 >The input data (`XY`) must be a Pandas DataFrame, with the performance criteria column named `"performance"`. Input column names can be unique, but must be consistent between training and prediction, i.e.,  `ScenarioExplorer.train()` and `ScenarioExplorer.predict(New_XY)`.
 
 ### Logistic regression
