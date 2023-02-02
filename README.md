@@ -9,7 +9,10 @@ ScenarioExplorer is an open-source Python package to aid in scenario discovery.
 
 `ScenarioExplorer(*args, **kwargs)`
 
-> \*\*kwargs
+> `*args`
+> (DataFrame) A pandas.DataFrame [n, m+1] with m input variable columns, and a `"performance"` column.  
+>
+> `**kwargs`
 > 	- `fail_threshold` : (float) Numeric performance metric threshold, separating *success* and *failure* conditions.
 >
 > 	- `fail_criteria`: (str) Options include "<", "<=", ">", ">="
