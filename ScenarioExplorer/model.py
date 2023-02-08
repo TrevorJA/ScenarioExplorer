@@ -125,7 +125,7 @@ class ScenarioExplorer:
             contour_levels = np.arange(0.0, 1.05,0.1)
         elif self.method == 'boosted-trees':
             contour_levels = [0.0, 0.5, 1.0]
-            
+
         contour_cmap = mpl.cm.get_cmap('RdBu')
         dot_cmap = mpl.colors.ListedColormap(np.array([[227,26,28],[166,206,227]])/255.0)
 

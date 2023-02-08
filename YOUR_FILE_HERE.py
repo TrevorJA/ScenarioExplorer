@@ -1,16 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jan 30 20:51:40 2023
 
-@author: tjame
-"""
-import sys
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-
-sys.path.append('..')
 
 import ScenarioExplorer
 
