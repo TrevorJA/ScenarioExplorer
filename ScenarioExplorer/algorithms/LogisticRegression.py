@@ -24,7 +24,7 @@ class LogisticRegressionClassifier:
         :param X: 2D numpy array of shape (num_samples, num_features)
         :return: 1D numpy array of shape (num_samples,)
         """
-        return self.classifier.predict(XTe)
+        return self.classifier.predict_proba(XTe)[:, 0]
 
     def get_params(self):
         """

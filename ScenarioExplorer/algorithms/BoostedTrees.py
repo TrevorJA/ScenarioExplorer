@@ -26,7 +26,7 @@ class BoostedTreeClassifier:
         :param X: 2D numpy array of shape (num_samples, num_features)
         :return: 1D numpy array of shape (num_samples,)
         """
-        return self.classifier.predict(XTe)
+        return self.classifier.predict_proba(XTe)[:,0]
 
     def rank_features(self):
         feature_rank = deepcopy(self.classifier.feature_importances_)

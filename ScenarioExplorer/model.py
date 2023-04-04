@@ -71,9 +71,8 @@ class ScenarioExplorer:
             return self.model.predict(X_predict)
 
 
-    def plot_contour(self, vars, save_figure = False, figure_addon = ""):
-        n_samples = 100
-
+    def plot_contour(self, vars, n_contours = 10, n_gridpoints = 100, save_figure = False, figure_addon = ""):
+        
         assert(len(vars) == 2), 'Input vars must be length 2.'
         # Assert vars are valid column names
 
@@ -92,11 +91,11 @@ class ScenarioExplorer:
         # Make a grid
         x1_range = np.linspace(x_variable.min()[vars[0]],
                             x_variable.max()[vars[0]],
-                            n_samples)
+                            n_gridpoints)
 
         x2_range = np.linspace(x_variable.min()[vars[1]],
                             x_variable.max()[vars[1]],
-                            n_samples)
+                            n_gridpoints)
 
         x1_mesh, x2_mesh = np.meshgrid(x1_range, x2_range)
 
@@ -105,13 +104,12 @@ class ScenarioExplorer:
         grid[vars[0]] = x1_mesh.flatten()
         grid[vars[1]] = x2_mesh.flatten()
         for i in range(n_fixed):
-            grid[fixed_columns[i]] = np.ones(n_samples**2)*x_fixed_means[i]
+            grid[fixed_columns[i]] = np.ones(n_gridpoints**2)*x_fixed_means[i]
 
         self._grid = grid
 
         # Re-order
         input_columns = self.XY.columns[~self.XY.columns.isin(['performance','success'])]
-        print(f'Using {input_columns} as predictors.')
         grid = grid.loc[:,input_columns]
 
         # Make predictions across the grid
@@ -122,9 +120,9 @@ class ScenarioExplorer:
         ### Plotting
         ## Colors
         if self.method == 'logistic':
-            contour_levels = np.arange(0.0, 1.05,0.1)
+            contour_levels = np.arange(0.0, 1.05,(1.0/n_contours))
         elif self.method == 'boosted-trees':
-            contour_levels = [0.0, 0.5, 1.0]
+            contour_levels = np.arange(0.0, 1.05, (1.0/n_contours))
 
         contour_cmap = mpl.cm.get_cmap('RdBu')
         dot_cmap = mpl.colors.ListedColormap(np.array([[227,26,28], [166,206,227]])/255.0)
