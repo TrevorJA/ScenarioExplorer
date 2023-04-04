@@ -25,6 +25,10 @@ class ScenarioExplorer:
         self.method = kwargs.get('method', 'logistic')
         self.figure_directory = kwargs.get('figure_directory', './figures')
 
+        self.max_tree_depth = kwargs.get('max_tree_depth', 3)
+        self.n_trees = kwargs.get('n_trees', 3)
+        self.max_epochs = kwargs.get('max_epochs', 100)
+        
         # Useful tags
         self._trained = False
 
@@ -50,9 +54,10 @@ class ScenarioExplorer:
         self.classify()
 
         if self.method == 'logistic':
-            self.model = LogisticRegressionClassifier()
+            self.model = LogisticRegressionClassifier(max_iterations = self.max_epochs)
         elif self.method == 'boosted-trees':
-            self.model = BoostedTreeClassifier()
+            self.model = BoostedTreeClassifier(max_depth = self.max_tree_depth,
+                                               n_estimators = self.n_trees)
 
         predictors = self.XY.columns[~self.XY.columns.isin(['performance', 'success'])]
         self.model.train(self.XY.loc[:, predictors],
