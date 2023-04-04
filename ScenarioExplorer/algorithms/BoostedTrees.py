@@ -6,8 +6,8 @@ class BoostedTreeClassifier:
         self.classifier = GradientBoostingClassifier()
         #self.classifier.loss = kwargs.get('loss_function', 'log_loss')
         self.classifier.learning_rate = kwargs.get('learning_rate', 0.1)
-        self.classifier.max_depth = kwargs.get('max_depth', 3)
-        self.classifier.n_estimators = kwargs.get('n_estimators', 200)
+        self.classifier.max_depth = kwargs.get('max_depth', 5)
+        self.classifier.n_estimators = kwargs.get('n_estimators', 100)
 
 
 

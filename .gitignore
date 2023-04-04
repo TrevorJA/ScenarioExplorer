@@ -3,7 +3,6 @@ __pycache__/
 */__pycache__/
 */*/__pycache__/
 */*/*/__pycache__/
-TBW_SD_data/*.csv
-TBW_SD_data/*
 
-Fig1.png
+venv/
+TBW_ScenarioDiscovery/

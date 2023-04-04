@@ -4,7 +4,7 @@ from sklearn.linear_model import LogisticRegression
 class LogisticRegressionClassifier:
     def __init__(self, **kwargs):
         self.classifier = LogisticRegression()
-        self.max_iterations = kwargs.get('max_iterations', 200)
+        self.max_iterations = kwargs.get('max_iterations', 300)
 
 
     def train(self, X, y):
